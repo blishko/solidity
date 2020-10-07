@@ -5,7 +5,7 @@ Language Features:
 
 
 Compiler Features:
-
+ * SMTChecker: Support inline arrays.
 
 Bugfixes:
  * Type Checker: Fix internal compiler error caused by storage parameters with nested mappings in libraries.
