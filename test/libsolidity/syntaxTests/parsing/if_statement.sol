@@ -4,5 +4,6 @@ contract test {
     }
 }
 // ----
+// Warning 6321: (60-64): Unnamed return parameter can remain uninitialized.
 // Warning 2072: (109-115): Unused local variable.
 // Warning 2018: (20-128): Function state mutability can be restricted to pure

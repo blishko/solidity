@@ -9,3 +9,5 @@ contract C {
 }
 //
 // ----
+// Warning 6321: (81-85): Unnamed return parameter can remain uninitialized.
+// Warning 6321: (87-91): Unnamed return parameter can remain uninitialized.

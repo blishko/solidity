@@ -17,3 +17,4 @@ contract C {
     }
 }
 // ----
+// Warning 6321: (399-407): Unnamed return parameter can remain uninitialized.

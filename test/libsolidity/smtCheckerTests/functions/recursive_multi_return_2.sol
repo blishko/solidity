@@ -23,5 +23,18 @@ a;
 	}
 }
 // ----
+// Warning 6321: (163-167): Unnamed return parameter can remain uninitialized.
+// Warning 6321: (171-175): Unnamed return parameter can remain uninitialized.
+// Warning 6321: (179-183): Unnamed return parameter can remain uninitialized.
+// Warning 6321: (187-191): Unnamed return parameter can remain uninitialized.
+// Warning 6321: (195-199): Unnamed return parameter can remain uninitialized.
+// Warning 6321: (203-207): Unnamed return parameter can remain uninitialized.
+// Warning 6321: (211-215): Unnamed return parameter can remain uninitialized.
+// Warning 6321: (219-223): Unnamed return parameter can remain uninitialized.
+// Warning 6321: (227-231): Unnamed return parameter can remain uninitialized.
+// Warning 6321: (235-239): Unnamed return parameter can remain uninitialized.
+// Warning 6321: (241-244): Unnamed return parameter can remain uninitialized.
+// Warning 6321: (246-250): Unnamed return parameter can remain uninitialized.
+// Warning 6321: (252-259): Unnamed return parameter can remain uninitialized.
 // Warning 6133: (72-90): Statement has no effect.
 // Warning 6133: (96-107): Statement has no effect.

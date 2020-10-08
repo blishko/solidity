@@ -4,3 +4,5 @@ contract C {
     a;
   }
 }
+// ----
+// Warning 6321: (46-50): Unnamed return parameter can remain uninitialized.

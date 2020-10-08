@@ -21,3 +21,6 @@ contract C {
 	}
 }
 // ----
+// Warning 6321: (194-198): Unnamed return parameter can remain uninitialized.
+// Warning 6321: (200-204): Unnamed return parameter can remain uninitialized.
+// Warning 6321: (206-213): Unnamed return parameter can remain uninitialized.

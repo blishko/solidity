@@ -11,4 +11,5 @@ contract C {
     }
 }
 // ----
+// Warning 6321: (83-87): Unnamed return parameter can remain uninitialized.
 // Warning 6328: (203-217): CHC: Assertion violation happens here.

@@ -10,4 +10,5 @@ contract C {
 // ====
 // EVMVersion: >=byzantium
 // ----
+// Warning 6321: (150-154): Unnamed return parameter can remain uninitialized.
 // Warning 2072: (166-183): Unused local variable.

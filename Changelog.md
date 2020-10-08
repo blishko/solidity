@@ -5,6 +5,7 @@ Language Features:
 
 
 Compiler Features:
+ * Control Flow Graph: Print warning for non-empty functions with unnamed return parameters but no return statement.
 
 
 Bugfixes:

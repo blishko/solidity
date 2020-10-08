@@ -9,6 +9,7 @@ contract test {
     }
 }
 // ----
+// Warning 6321: (83-87): Unnamed return parameter can remain uninitialized.
 // Warning 6133: (93-94): Statement has no effect.
 // Warning 6133: (98-104): Statement has no effect.
 // Warning 6133: (108-112): Statement has no effect.

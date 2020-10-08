@@ -8,3 +8,5 @@ contract Second {
         if (First(2).fun() == true) return 1;
     }
 }
+// ----
+// Warning 6321: (183-187): Unnamed return parameter can remain uninitialized.
