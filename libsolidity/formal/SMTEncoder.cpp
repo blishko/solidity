@@ -24,6 +24,9 @@
 
 #include <libsolidity/analysis/ConstantEvaluator.h>
 
+#include <libyul/AST.h>
+#include <libyul/optimiser/Semantics.h>
+
 #include <libsmtutil/SMTPortfolio.h>
 #include <libsmtutil/Helpers.h>
 
@@ -304,11 +307,50 @@ void SMTEncoder::endVisit(Block const& _block)
 
 bool SMTEncoder::visit(InlineAssembly const& _inlineAsm)
 {
-	m_errorReporter.warning(
-		7737_error,
-		_inlineAsm.location(),
-		"Assertion checker does not support inline assembly."
-	);
+	struct AssignedExternalsCollector: public yul::ASTWalker
+	{
+		using ExternalReferences = map<yul::Identifier const*, InlineAssemblyAnnotation::ExternalIdentifierInfo>;
+		AssignedExternalsCollector(InlineAssembly const& _inlineAsm): externalReferences(_inlineAsm.annotation().externalReferences)
+		{
+			this->operator()(_inlineAsm.operations());
+		}
+
+		ExternalReferences const& externalReferences;
+		set<VariableDeclaration const*> assignedVars;
+
+		using yul::ASTWalker::operator();
+		void operator()(yul::Assignment const& _assignment)
+		{
+			auto const& vars = _assignment.variableNames;
+			for (auto const& identifier: vars)
+				if (auto it = externalReferences.find(&identifier); it != externalReferences.end())
+					if (auto declaration = dynamic_cast<VariableDeclaration const*>(it->second.declaration))
+						assignedVars.insert(declaration);
+		}
+	};
+
+	auto assignedVars = AssignedExternalsCollector(_inlineAsm).assignedVars;
+
+	yul::SideEffectsCollector sideEffectsCollector(_inlineAsm.dialect(), _inlineAsm.operations());
+	bool writesToMemory = sideEffectsCollector.invalidatesMemory();
+	bool writesToStorage = sideEffectsCollector.invalidatesStorage();
+
+	if (writesToMemory)
+		resetMemoryVariables();
+	if (writesToStorage)
+		resetStorageVariables();
+	for (auto const* var: assignedVars)
+		if (var)
+		{
+			solAssert(var->isLocalVariable(), "Non-local variable assigned in inlined assembly");
+			m_context.resetVariable(*var);
+		}
+
+//	m_errorReporter.warning(
+//		7737_error,
+//		_inlineAsm.location(),
+//		"Assertion checker does not support inline assembly."
+//	);
 	return false;
 }
 
@@ -2254,6 +2296,18 @@ void SMTEncoder::initializeLocalVariables(FunctionDefinition const& _function)
 void SMTEncoder::resetStateVariables()
 {
 	m_context.resetVariables([&](VariableDeclaration const& _variable) { return _variable.isStateVariable(); });
+}
+
+void SMTEncoder::resetMemoryVariables()
+{
+	m_context.resetVariables([&](VariableDeclaration const& _variable) { return _variable.referenceLocation() == VariableDeclaration::Location::Memory; });
+}
+
+void SMTEncoder::resetStorageVariables()
+{
+	m_context.resetVariables([&](VariableDeclaration const& _variable) {
+		return _variable.referenceLocation() == VariableDeclaration::Location::Storage || _variable.isStateVariable();
+	});
 }
 
 void SMTEncoder::resetReferences(VariableDeclaration const& _varDecl)
