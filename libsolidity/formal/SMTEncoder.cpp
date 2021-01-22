@@ -21,11 +21,9 @@
 #include <libsolidity/ast/TypeProvider.h>
 #include <libsolidity/formal/SymbolicState.h>
 #include <libsolidity/formal/SymbolicTypes.h>
+#include <libsolidity/formal/YulEncoder.h>
 
 #include <libsolidity/analysis/ConstantEvaluator.h>
-
-#include <libyul/AST.h>
-#include <libyul/optimiser/Semantics.h>
 
 #include <libsmtutil/SMTPortfolio.h>
 #include <libsmtutil/Helpers.h>
@@ -307,29 +305,7 @@ void SMTEncoder::endVisit(Block const& _block)
 
 bool SMTEncoder::visit(InlineAssembly const& _inlineAsm)
 {
-	struct AssignedExternalsCollector: public yul::ASTWalker
-	{
-		using ExternalReferences = map<yul::Identifier const*, InlineAssemblyAnnotation::ExternalIdentifierInfo>;
-		AssignedExternalsCollector(InlineAssembly const& _inlineAsm): externalReferences(_inlineAsm.annotation().externalReferences)
-		{
-			this->operator()(_inlineAsm.operations());
-		}
-
-		ExternalReferences const& externalReferences;
-		set<VariableDeclaration const*> assignedVars;
-
-		using yul::ASTWalker::operator();
-		void operator()(yul::Assignment const& _assignment)
-		{
-			auto const& vars = _assignment.variableNames;
-			for (auto const& identifier: vars)
-				if (auto it = externalReferences.find(&identifier); it != externalReferences.end())
-					if (auto declaration = dynamic_cast<VariableDeclaration const*>(it->second.declaration))
-						assignedVars.insert(declaration);
-		}
-	};
-
-	auto assignedVars = AssignedExternalsCollector(_inlineAsm).assignedVars;
+	YulEncoder yulEncoder(_inlineAsm, m_context);
 
 	yul::SideEffectsCollector sideEffectsCollector(_inlineAsm.dialect(), _inlineAsm.operations());
 	bool writesToMemory = sideEffectsCollector.invalidatesMemory();
@@ -339,12 +315,6 @@ bool SMTEncoder::visit(InlineAssembly const& _inlineAsm)
 		resetMemoryVariables();
 	if (writesToStorage)
 		resetStorageVariables();
-	for (auto const* var: assignedVars)
-		if (var)
-		{
-			solAssert(var->isLocalVariable(), "Non-local variable assigned in inlined assembly");
-			m_context.resetVariable(*var);
-		}
 
 //	m_errorReporter.warning(
 //		7737_error,

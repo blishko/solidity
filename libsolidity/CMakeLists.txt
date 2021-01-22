@@ -122,6 +122,8 @@ set(sources
 	formal/SymbolicVariables.h
 	formal/VariableUsage.cpp
 	formal/VariableUsage.h
+    formal/YulEncoder.h
+    formal/YulEncoder.cpp
 	interface/ABI.cpp
 	interface/ABI.h
 	interface/CompilerStack.cpp
