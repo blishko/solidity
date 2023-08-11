@@ -23,12 +23,24 @@
 #include <libsolidity/ast/TypeProvider.h>
 #include <libsolidity/ast/Types.h>
 #include <libsolutil/CommonData.h>
+#include <algorithm>
 #include <memory>
 #include <vector>
 
 using namespace std;
 using namespace solidity::util;
 using namespace solidity::smtutil;
+
+namespace
+{
+	// HACK to get around Z3 bug in printing type names with spaces (https://github.com/Z3Prover/z3/issues/6850)
+	void sanitizeTypeName(std::string& name)
+	{
+		std::replace(name.begin(), name.end(), ' ', '_');
+		std::replace(name.begin(), name.end(), '(', '[');
+		std::replace(name.begin(), name.end(), ')', ']');
+	}
+}
 
 namespace solidity::frontend::smt
 {
@@ -119,13 +131,16 @@ SortPointer smtSort(frontend::Type const& _type)
 			else if (baseType->category() == frontend::Type::Category::FixedBytes)
 				tupleName = "fixedbytes";
 			else
+			{
 				tupleName = arrayType->baseType()->toString(true);
+			}
 
 			tupleName += "_array";
 		}
 		else
 			tupleName = _type.toString(true);
 
+		sanitizeTypeName(tupleName);
 		tupleName += "_tuple";
 
 		return make_shared<TupleSort>(
@@ -137,7 +152,9 @@ SortPointer smtSort(frontend::Type const& _type)
 	case Kind::Tuple:
 	{
 		vector<string> members;
-		auto const& tupleName = _type.toString(true);
+		auto tupleName = _type.toString(true);
+		sanitizeTypeName(tupleName);
+
 		vector<SortPointer> sorts;
 
 		if (auto const* tupleType = dynamic_cast<frontend::TupleType const*>(&_type))
