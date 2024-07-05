@@ -54,7 +54,7 @@ contract C {
 // ====
 // SMTEngine: all
 // ----
-// Warning 3944: (679-708): CHC: Underflow (resulting value less than -32768) might happen here.
+// Warning 3944: (679-708): CHC: Underflow (resulting value less than -32768) happens here.
 // Warning 4984: (679-708): CHC: Overflow (resulting value larger than 32767) might happen here.
 // Warning 3944: (777-806): CHC: Underflow (resulting value less than -32768) might happen here.
 // Warning 4984: (777-806): CHC: Overflow (resulting value larger than 32767) might happen here.
@@ -73,7 +73,6 @@ contract C {
 // Warning 6328: (2245-2271): CHC: Assertion violation might happen here.
 // Info 1391: CHC: 10 verification condition(s) proved safe! Enable the model checker option "show proved safe" to see all of them.
 // Warning 2661: (679-708): BMC: Overflow (resulting value larger than 32767) happens here.
-// Warning 4144: (679-708): BMC: Underflow (resulting value less than -32768) happens here.
 // Warning 2661: (777-806): BMC: Overflow (resulting value larger than 32767) happens here.
 // Warning 4144: (777-806): BMC: Underflow (resulting value less than -32768) happens here.
 // Warning 2661: (953-982): BMC: Overflow (resulting value larger than 32767) happens here.
@@ -81,4 +80,4 @@ contract C {
 // Warning 3046: (1051-1080): BMC: Division by zero happens here.
 // Warning 3046: (1149-1178): BMC: Division by zero happens here.
 // Warning 7812: (2245-2271): BMC: Assertion violation might happen here.
-// Info 6002: BMC: 14 verification condition(s) proved safe! Enable the model checker option "show proved safe" to see all of them.
+// Info 6002: BMC: 13 verification condition(s) proved safe! Enable the model checker option "show proved safe" to see all of them.
