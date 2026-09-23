@@ -13,7 +13,7 @@ cat "${soljson_js}"
 
 # If this changes in an emscripten update, it's probably nothing to worry about,
 # but we should double-check when it happens and adjust the tail command below.
-[[ $(head -c 11 "${soljson_js}") == "use strict;" ]] || { >&2 echo 'Expected soljson.js to start with "use strict;"'; exit 1; }
+[[ $(head -c 13 "${soljson_js}") == '"use strict";' ]] || { >&2 echo 'Expected soljson.js to start with "use strict";'; exit 1; }
 
 echo "Packing $soljson_js and $soljson_wasm to $output."
 (
@@ -30,7 +30,7 @@ echo "Packing $soljson_js and $soljson_wasm to $output."
     echo '",'
     echo -n "${soljson_wasm_size});"
     # Remove "use strict;" from the js wrapper.
-    tail -c +12 "${soljson_js}"
+    tail -c +14 "${soljson_js}"
 ) > "$output"
 
 echo "Testing $output."
