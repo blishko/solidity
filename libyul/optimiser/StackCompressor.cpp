@@ -182,16 +182,13 @@ void eliminateVariables(
 	UnusedPruner::runUntilStabilised(_dialect, _ast, _allowMSizeOptimization, nullptr, allFunctions);
 }
 
-bool eliminateVariablesOptimizedCodegen(
+void eliminateVariablesOptimizedCodegen(
 	Dialect const& _dialect,
 	Block& _ast,
 	std::map<YulName, std::vector<StackLayoutGenerator::StackTooDeep>> const& _unreachables,
 	bool _allowMSizeOptimization
 )
 {
-	if (std::all_of(_unreachables.begin(), _unreachables.end(), [](auto const& _item) { return _item.second.empty(); }))
-		return true;
-
 	RematCandidateSelector selector{_dialect};
 	selector(_ast);
 
@@ -232,7 +229,6 @@ bool eliminateVariablesOptimizedCodegen(
 	// Do not remove functions.
 	std::set<YulName> allFunctions = NameCollector{_ast, NameCollector::OnlyFunctions}.names();
 	UnusedPruner::runUntilStabilised(_dialect, _ast, _allowMSizeOptimization, nullptr, allFunctions);
-	return false;
 }
 
 }
@@ -259,7 +255,6 @@ std::tuple<bool, Block> StackCompressor::run(
 	}
 	bool allowMSizeOptimization = !MSizeFinder::containsMSize(*_object.dialect(), _object.code()->root());
 	Block astRoot = std::get<Block>(ASTCopier{}(_object.code()->root()));
-	bool stackCompressionSuccessful = false;
 	if (usesOptimizedCodeGenerator)
 	{
 		yul::AsmAnalysisInfo analysisInfo = yul::AsmAnalyzer::analyzeStrictAssertCorrect(
@@ -269,10 +264,13 @@ std::tuple<bool, Block> StackCompressor::run(
 		);
 		std::unique_ptr<CFG> cfg = ControlFlowGraphBuilder::build(analysisInfo, *_object.dialect(), astRoot);
 		yulAssert(evmDialect);
-		stackCompressionSuccessful = eliminateVariablesOptimizedCodegen(
+		auto const unreachables = StackLayoutGenerator::reportStackTooDeep(*cfg, *evmDialect);
+		if (ranges::all_of(unreachables, [](auto const& _item) { return _item.second.empty(); }))
+			return std::make_tuple(true, std::move(astRoot));;
+		eliminateVariablesOptimizedCodegen(
 			*_object.dialect(),
 			astRoot,
-			StackLayoutGenerator::reportStackTooDeep(*cfg, *evmDialect),
+			unreachables,
 			allowMSizeOptimization
 		);
 	}
@@ -293,5 +291,5 @@ std::tuple<bool, Block> StackCompressor::run(
 			);
 		}
 	}
-	return std::make_tuple(stackCompressionSuccessful, std::move(astRoot));
+	return std::make_tuple(false, std::move(astRoot));
 }
