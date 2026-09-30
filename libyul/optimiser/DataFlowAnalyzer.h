@@ -36,12 +36,9 @@
 #include <boost/container/small_vector.hpp>
 
 #include <map>
-#include <set>
 
 namespace solidity::yul
 {
-using boost::container::small_flat_set;
-using boost::container::small_vector;
 
 class Dialect;
 struct SideEffects;
@@ -110,14 +107,14 @@ public:
 
 	/// @returns the current value of the given variable, if known - always movable.
 	AssignedValue const* variableValue(YulName _variable) const { return util::valueOrNullptr(m_state.value, _variable); }
-	small_vector<YulName, 2> const* sortedReferences(YulName _variable) const { return util::valueOrNullptr(m_state.sortedReferences, _variable); }
+	boost::container::small_vector<YulName, 2> const* sortedReferences(YulName _variable) const { return util::valueOrNullptr(m_state.sortedReferences, _variable); }
 	std::optional<YulName> storageValue(YulName _key) const;
 	std::optional<YulName> memoryValue(YulName _key) const;
 	std::optional<YulName> keccakValue(YulName _start, YulName _length) const;
 
 protected:
 	/// Registers the assignment.
-	void handleAssignment(small_flat_set<YulName, 1> const& _names, Expression* _value, bool _isDeclaration);
+	void handleAssignment(boost::container::small_flat_set<YulName, 1> const& _names, Expression* _value, bool _isDeclaration);
 
 	/// Creates a new inner scope.
 	void pushScope(bool _functionScope);
@@ -187,7 +184,7 @@ private:
 		util::unordered_flat_map<YulName, AssignedValue> value;
 		/// m_references[a].contains(b) <=> the current expression assigned to a references b
 		/// The mapped vectors _must always_ be sorted
-		util::unordered_flat_map<YulName, small_vector<YulName, 2>> sortedReferences;
+		util::unordered_flat_map<YulName, boost::container::small_vector<YulName, 2>> sortedReferences;
 
 		Environment environment;
 	};

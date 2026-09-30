@@ -33,9 +33,10 @@
 
 #include <libsolutil/CommonData.h>
 
-#include <variant>
-
 #include <range/v3/view/reverse.hpp>
+
+#include <set>
+#include <variant>
 
 using namespace solidity;
 using namespace solidity::util;
@@ -93,7 +94,7 @@ void DataFlowAnalyzer::operator()(ExpressionStatement& _statement)
 
 void DataFlowAnalyzer::operator()(Assignment& _assignment)
 {
-	small_flat_set<YulName, 1> names;
+	boost::container::small_flat_set<YulName, 1> names;
 	for (auto const& var: _assignment.variableNames)
 		names.emplace(var.name);
 	assertThrow(_assignment.value, OptimizerException, "");
@@ -104,7 +105,7 @@ void DataFlowAnalyzer::operator()(Assignment& _assignment)
 
 void DataFlowAnalyzer::operator()(VariableDeclaration& _varDecl)
 {
-	small_flat_set<YulName, 1> names;
+	boost::container::small_flat_set<YulName, 1> names;
 	for (auto const& var: _varDecl.variables)
 		names.emplace(var.name);
 	m_variableScopes.back().variables.insert(names.begin(), names.end());
@@ -241,7 +242,7 @@ std::optional<YulName> DataFlowAnalyzer::keccakValue(YulName _start, YulName _le
 		return std::nullopt;
 }
 
-void DataFlowAnalyzer::handleAssignment(small_flat_set<YulName, 1> const& _variables, Expression* _value, bool _isDeclaration)
+void DataFlowAnalyzer::handleAssignment(boost::container::small_flat_set<YulName, 1> const& _variables, Expression* _value, bool _isDeclaration)
 {
 	if (!_isDeclaration)
 		clearValues(_variables);
@@ -263,7 +264,7 @@ void DataFlowAnalyzer::handleAssignment(small_flat_set<YulName, 1> const& _varia
 	}
 
 	auto const& referencedVariables = movableChecker.referencedVariables();
-	small_vector<YulName, 2> const referencedVariablesSorted(referencedVariables.begin(), referencedVariables.end());
+	boost::container::small_vector<YulName, 2> const referencedVariablesSorted(referencedVariables.begin(), referencedVariables.end());
 	for (auto const& name: _variables)
 	{
 		m_state.sortedReferences[name] = referencedVariablesSorted;
