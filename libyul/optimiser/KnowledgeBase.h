@@ -102,7 +102,15 @@ private:
 		}
 	};
 
+	/// Determines the offset of @a _var relative to the representative of its group by recursively exploring the value
+	/// provided by the value callback. The result is memoized. If the value is unknown or cannot be expressed as a
+	/// constant offset, @a _var becomes its own representative with offset zero.
+	/// @returns the offset
 	VariableOffset explore(YulName _var);
+	/// Determines the offset of @a _value relative to a representative. Handles literals, identifiers (via the
+	/// overload above), and `add`/`sub` if the result is a constant offset from a single representative or a constant.
+	/// Arithmetic is modulo 2**256.
+	/// @returns the offset or nullopt if @a _value is not of one of these forms
 	std::optional<VariableOffset> explore(Expression const& _value);
 
 	/// Retrieves the current value of a variable and potentially resets the variable if it is not up to date.
