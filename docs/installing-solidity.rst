@@ -374,7 +374,7 @@ The following C++ compilers and their minimum versions can build the Solidity co
 
 - `GCC <https://gcc.gnu.org>`_, version 13.3+
 - `Clang <https://clang.llvm.org/>`_, version 18.1.3+
-- `MSVC <https://visualstudio.microsoft.com/vs/>`_, version 2019+
+- `MSVC <https://visualstudio.microsoft.com/vs/>`_, version 2022+
 
 Prerequisites - macOS
 ---------------------
