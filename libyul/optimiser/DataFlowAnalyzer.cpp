@@ -266,23 +266,7 @@ void DataFlowAnalyzer::handleAssignment(boost::container::small_flat_set<YulName
 	auto const& referencedVariables = movableChecker.referencedVariables();
 	boost::container::small_vector<YulName, 2> const referencedVariablesSorted(referencedVariables.begin(), referencedVariables.end());
 	for (auto const& name: _variables)
-	{
 		m_state.sortedReferences[name] = referencedVariablesSorted;
-		if (!_isDeclaration)
-		{
-			// assignment to slot denoted by "name"
-			m_state.environment.storage.erase(name);
-			// assignment to slot contents denoted by "name"
-			boost::unordered::erase_if(m_state.environment.storage, mapTuple([&name](auto&& /* key */, auto&& value) { return value == name; }));
-			// assignment to slot denoted by "name"
-			m_state.environment.memory.erase(name);
-			// assignment to slot contents denoted by "name"
-			std::erase_if(m_state.environment.keccak, [&name](auto&& _item) {
-				return _item.first.first == name || _item.first.second == name || _item.second == name;
-			});
-			boost::unordered::erase_if(m_state.environment.memory, mapTuple([&name](auto&& /* key */, auto&& value) { return value == name; }));
-		}
-	}
 
 	if (_value && _variables.size() == 1)
 	{
