@@ -373,7 +373,7 @@ The following C++ compilers and their minimum versions can build the Solidity co
 .. Note: Minimum versions for GCC and Clang are based on availability in Ubuntu 24.04.
 
 - `GCC <https://gcc.gnu.org>`_, version 13.3+
-- `Clang <https://clang.llvm.org/>`_, version 18.1.3+
+- `Clang <https://clang.llvm.org/>`_, version 19.1.1+
 - `MSVC <https://visualstudio.microsoft.com/vs/>`_, version 2022+
 
 Prerequisites - macOS

@@ -21,8 +21,8 @@ parameters:
     default: "ghcr.io/argotorg/solidity-buildpack-deps@sha256:68c1a86e0ff47c53a2bef9f6a3674ddea7d243a6c0a34f35d9d6321984364dfb"
   ubuntu-2404-clang-docker-image:
     type: string
-    # ghcr.io/argotorg/solidity-buildpack-deps:ubuntu2404.clang-9
-    default: "ghcr.io/argotorg/solidity-buildpack-deps@sha256:546ff9b0826388e6b0d7c1122826dd9161bd373ca546676f801bccf9a1f38857"
+    # ghcr.io/argotorg/solidity-buildpack-deps:ubuntu2404.clang-10
+    default: "ghcr.io/argotorg/solidity-buildpack-deps@sha256:6cc6a569ae3d8bda8a7a18296b8713d853d2702cb6ef5c6618d9020937c2cf48"
   ubuntu-clang-ossfuzz-docker-image:
     type: string
     # ghcr.io/argotorg/solidity-buildpack-deps:ubuntu.clang.ossfuzz-14

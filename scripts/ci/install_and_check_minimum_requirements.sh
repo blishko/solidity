@@ -18,7 +18,7 @@ CMAKE_DOWNLOAD_DIR="${CMAKE_DOWNLOAD_DIR:-${HOME}/.cache/cmake-download}"
 
 # minimum gcc/clang versions
 GCC_VERSION=13.3.0
-CLANG_VERSION=18.1.3
+CLANG_VERSION=19.1.1
 
 # which compiler version to check in this script
 check_gcc=false
