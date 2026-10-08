@@ -32,7 +32,7 @@
 # apparently this currently breaks due to conflicting compatibility headers.
 # Using $(em-config CACHE)/sysroot/usr seems to work, though, and still has cmake find the
 # dependencies automatically.
-FROM emscripten/emsdk:3.1.52 AS base
+FROM emscripten/emsdk:3.1.53 AS base
 LABEL version="28"
 
 ADD emscripten.jam /usr/src
