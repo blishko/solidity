@@ -11,3 +11,4 @@ contract D is C {
 	mapping(address => S) public override f;
 }
 // ----
+// TypeError 4822: (190-229): Overriding public state variable return types differ.

@@ -2875,32 +2875,11 @@ FunctionType::FunctionType(VariableDeclaration const& _varDecl):
 			break;
 	}
 
-	if (auto structType = dynamic_cast<StructType const*>(returnType))
-	{
-		for (auto const& member: structType->members(nullptr))
-		{
-			solAssert(member.type, "");
-			if (member.type->category() != Category::Mapping)
-			{
-				if (auto arrayType = dynamic_cast<ArrayType const*>(member.type))
-					if (!arrayType->isByteArrayOrString())
-						continue;
-				m_returnParameterTypes.push_back(TypeProvider::withLocationIfReference(
-					DataLocation::Memory,
-					member.type
-				));
-				m_returnParameterNames.push_back(member.name);
-			}
-		}
-	}
-	else
-	{
-		m_returnParameterTypes.push_back(TypeProvider::withLocationIfReference(
-			DataLocation::Memory,
-			returnType
-		));
-		m_returnParameterNames.emplace_back(returnName);
-	}
+	m_returnParameterTypes.push_back(TypeProvider::withLocationIfReference(
+		DataLocation::Memory,
+		returnType
+	));
+	m_returnParameterNames.emplace_back(returnName);
 
 	solAssert(
 			m_parameterNames.size() == m_parameterTypes.size(),
